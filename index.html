@@ -1,577 +1,755 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高铁“公交化”之后：广深港正在消融的边界</title>
-    <!-- 字体与ECharts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a1428;
-            color: #e8eef5;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        /* 视差背景层：城市夜景图片 */
-        .parallax-bg {
-            position: fixed;
-            top: -20%;
-            left: 0;
-            width: 100%;
-            height: 140vh;
-            background-image: url('https://images.unsplash.com/photo-1536599018102-9f803c140fcb?q=80&w=1974&auto=format&fit=crop'); /* 香港夜景，免费可商用 */
-            background-size: cover;
-            background-position: center 30%;
-            background-repeat: no-repeat;
-            z-index: -2;
-            transform: translateZ(0);
-            will-change: transform;
-            animation: slowZoom 40s infinite alternate ease-in-out;
-        }
-        /* 深色叠加层，保证文字可读 */
-        .parallax-bg::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(145deg, rgba(10,20,40,0.8) 0%, rgba(10,20,40,0.6) 100%);
-            backdrop-filter: brightness(0.7);
-        }
-        @keyframes slowZoom {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
-        }
-        /* 主内容容器 */
-        .content {
-            position: relative;
-            z-index: 10;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 2rem 4rem;
-            background-color: rgba(10, 20, 40, 0.65);
-            backdrop-filter: blur(2px);
-            border-left: 1px solid #d4af37;
-            border-right: 1px solid #d4af37;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
-        }
-        /* 标题区 */
-        .hero {
-            text-align: center;
-            padding: 5rem 1rem 3rem;
-            position: relative;
-        }
-        .hero h1 {
-            font-size: 3.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #f5e7c8, #d4af37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-        }
-        .hero .sub {
-            font-size: 1.2rem;
-            color: #d4af37;
-            max-width: 800px;
-            margin: 1.5rem auto;
-            border-top: 1px solid #d4af37;
-            border-bottom: 1px solid #d4af37;
-            padding: 1rem 0;
-        }
-        /* 章节 */
-        .chapter {
-            margin: 5rem 0;
-            scroll-margin-top: 2rem;
-        }
-        .chapter-header {
-            display: flex;
-            align-items: baseline;
-            gap: 1rem;
-            border-bottom: 1px solid #d4af37;
-            padding-bottom: 0.8rem;
-            margin-bottom: 2rem;
-        }
-        .chapter-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #d4af37;
-            opacity: 0.8;
-        }
-        .chapter-title {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #fff;
-            text-shadow: 0 0 8px #d4af37;
-        }
-        /* 卡片 */
-        .card {
-            background: rgba(26, 42, 64, 0.7);
-            backdrop-filter: blur(6px);
-            border: 1px solid #d4af37;
-            border-radius: 24px;
-            padding: 2rem;
-            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.7), 0 0 15px rgba(212,175,55,0.3);
-            margin: 2rem 0;
-        }
-        .card-title {
-            font-size: 1.6rem;
-            font-weight: 600;
-            color: #d4af37;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid #d4af37;
-            padding-left: 1rem;
-        }
-        /* 图表容器 */
-        .chart-container {
-            width: 100%;
-            height: 350px;
-            margin: 2rem 0;
-            background: rgba(0, 10, 20, 0.5);
-            border-radius: 16px;
-            padding: 0.5rem;
-        }
-        .small-chart {
-            height: 250px;
-        }
-        /* 流向卡片 */
-        .flow-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            justify-content: center;
-            margin: 2rem 0;
-        }
-        .flow-card {
-            background: #1f3147;
-            border: 2px solid #d4af37;
-            border-radius: 40px;
-            padding: 1.8rem 2.5rem;
-            text-align: center;
-            min-width: 220px;
-        }
-        .flow-city {
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        .flow-arrow {
-            font-size: 2rem;
-            color: #d4af37;
-            margin: 0.5rem 0;
-        }
-        .flow-time {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #d4af37;
-        }
-        .flow-unit {
-            font-size: 1rem;
-        }
-        /* 词云 */
-        .word-cloud {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem 1.8rem;
-            margin: 2.5rem 0;
-        }
-        .cloud-item {
-            background: #2a3f5a;
-            color: #fff;
-            padding: 0.5rem 1.5rem;
-            border-radius: 60px;
-            font-size: 1rem;
-            font-weight: 500;
-            border: 1px solid #d4af37;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .cloud-item.large {
-            font-size: 2.2rem;
-            padding: 0.8rem 2.2rem;
-            background: #3a5a7a;
-        }
-        .cloud-item.medium {
-            font-size: 1.5rem;
-            padding: 0.6rem 1.8rem;
-        }
-        /* 数据来源 */
-        .footer {
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid #d4af37;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: #b8b8b8;
-        }
-        .footer a {
-            color: #d4af37;
-            text-decoration: none;
-        }
-        .gold-text {
-            color: #d4af37;
-        }
-        hr {
-            border: none;
-            border-top: 1px solid #d4af37;
-            margin: 2rem 0;
-        }
-        /* 新闻稿正文 */
-        .news-text {
-            font-size: 1.1rem;
-            margin: 1.5rem 0;
-        }
-        .news-text p {
-            margin: 1.2rem 0;
-        }
-        blockquote {
-            border-left: 4px solid #d4af37;
-            padding-left: 1.5rem;
-            margin: 1.5rem 0;
-            font-style: italic;
-            color: #e0e0e0;
-        }
-        @media (max-width: 700px) {
-            .hero h1 { font-size: 2.4rem; }
-            .chapter-title { font-size: 1.6rem; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高铁“公交化”之后：广深港正在消融的边界</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      /* 深蓝与金色高级配色 */
+      --bg-main: #040d1a;
+      --bg-panel: #0a182b;
+      --bg-card: #0f233d;
+      --gold-main: #d4af37;
+      --gold-light: #f3e5ab;
+      --gold-dark: #8a7322;
+      --text-title: #ffffff;
+      --text-body: #b0b8c4;
+      --text-muted: #6b7a90;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-body);
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* 视差滚动容器 */
+    .parallax-section {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      overflow: hidden;
+    }
+
+    /* 遮罩层，让文字更清晰 */
+    .parallax-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to bottom, rgba(4, 13, 26, 0.3) 0%, rgba(4, 13, 26, 0.9) 100%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 900px;
+      padding: 0 20px;
+      transform: translateY(20px);
+      animation: fadeUp 1.2s ease-out forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(40px); }
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      color: var(--text-title);
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .hero-subtitle {
+      font-size: 1.5rem;
+      color: var(--gold-light);
+      font-weight: 300;
+    }
+
+    /* 内容容器 */
+    .content-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 60px 20px;
+      position: relative;
+      z-index: 10;
+      background-color: var(--bg-main);
+    }
+
+    .section-title {
+      color: var(--gold-main);
+      font-size: 2rem;
+      margin: 60px 0 30px 0;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      padding-bottom: 15px;
+    }
+
+    .section-title span {
+      font-size: 3rem;
+      color: var(--gold-dark);
+      margin-right: 15px;
+      font-weight: 900;
+      opacity: 0.5;
+    }
+
+    p.article-text {
+      font-size: 1.15rem;
+      margin-bottom: 25px;
+      text-align: justify;
+    }
+
+    /* 图表卡片 */
+    .chart-card {
+      background-color: var(--bg-panel);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 40px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .chart-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(212, 175, 55, 0.1);
+      border-color: rgba(212, 175, 55, 0.4);
+    }
+
+    .chart-header {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .chart-title {
+      color: var(--gold-light);
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+
+    .chart-source {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 350px;
+      width: 100%;
+    }
+
+    /* 气泡图特殊样式 */
+    .bubble-container {
+      position: relative;
+      height: 400px;
+      width: 100%;
+      background: var(--bg-card);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--bg-main);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .bubble:hover {
+      transform: scale(1.15);
+      z-index: 10;
+      box-shadow: 0 0 25px var(--gold-main);
+    }
+    .bubble .b-title { font-weight: bold; line-height: 1.2; }
+    .bubble .b-desc { font-size: 0.8rem; margin-top: 4px; opacity: 0.9; }
+    
+    /* 悬浮提示框 */
+    .bubble .tooltip {
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(4, 13, 26, 0.95);
+      color: var(--gold-light);
+      padding: 10px 15px;
+      border: 1px solid var(--gold-main);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 20;
+    }
+    .bubble:hover .tooltip { opacity: 1; }
+
+    /* 中段视差分隔 */
+    .parallax-divider {
+      height: 60vh;
+      margin: 60px 0;
+    }
+
+    /* 底部收尾 */
+    .footer {
+      text-align: center;
+      padding: 50px 20px;
+      background: #02070e;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    /* 滚动浮现动画类 */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease-out;
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* 两列网格 */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    @media (max-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .hero-title { font-size: 2.2rem; }
+    }
+  </style>
 </head>
 <body>
-    <div class="parallax-bg"></div>
-    <div class="content">
-        <!-- 标题区域 -->
-        <div class="hero">
-            <h1>高铁“公交化”之后<br>广深港正在消融的边界</h1>
-            <div class="sub">2026年开年前两月跨境旅客558.06万 · 日均382列 · 高峰2分钟一班</div>
-        </div>
 
-        <!-- 新闻稿全文 逐字逐句 -->
-        <div class="news-text">
-            <p>2026年开年仅前两个月，广深港高铁累计发送跨境旅客558.06万人次，其中内地往香港288.82万，香港往内地269.24万，双向流动高度均衡。春运期间日均开行382列，高峰时段平均2分钟一班，真正实现“公交化”运营。</p>
-            <p>但这组破纪录的数字背后，隐藏着一个更深层的趋势：跨境不再是“旅游”或“探亲”的特有场景，而是已成为数十万人的日常。</p>
-        </div>
+  <!-- 首屏：AI生成的广深港夜景高铁图 -->
+  <div class="parallax-section" style="background-image: url('https://v3b.fal.media/files/b/0a91da9c/Uxg0cCvK2WC3gE4iNGADP_6868c14a2dcb4ccb8690d12b693d395a.webp');">
+    <div class="parallax-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">高铁“公交化”之后：<br><span style="color:var(--gold-main);">广深港正在消融的边界</span></h1>
+      <p class="hero-subtitle">数十万人的日常刚需，撑起一座正在融合的超级都市</p>
+    </div>
+  </div>
 
-        <!-- 图表一：双向客流对比 (饼图) -->
-        <div class="card">
-            <div class="card-title">📊 一、总览：2026年前两月双向客流对比</div>
-            <div class="news-text" style="margin-top:0;">
-                <p>• 1.1–2.28 累计：558.06万人次<br>• 内地→香港：288.82万<br>• 香港→内地：269.24万<br>• 双向均衡度：差值仅19.58万</p>
-            </div>
-            <div id="chart1" class="chart-container" style="height:300px;"></div>
-            <div class="gold-text" style="text-align:center;">双向高度均衡 · 内地→香港51.8% / 香港→内地48.2%</div>
-        </div>
+  <div class="content-container">
+    
+    <p class="article-text reveal">2026年开年仅前两个月，广深港高铁累计发送跨境旅客558.06万人次，其中内地往香港288.82万，香港往内地269.24万，双向流动高度均衡。春运期间日均开行382列，高峰时段平均2分钟一班，真正实现“公交化”运营。</p>
+    <p class="article-text reveal">但这组破纪录的数字背后，隐藏着一个更深层的趋势：跨境不再是“旅游”或“探亲”的特有场景，而是已成为数十万人的日常。</p>
 
-        <!-- 图表二：公交化运营 (条形图) -->
-        <div class="card">
-            <div class="card-title">🚆 二、公交化运营：2分钟一班，随到随走</div>
-            <div class="news-text">春运期间：日均开行382列，高峰时段每小时30列，平均2分钟一班。</div>
-            <div id="chart2" class="chart-container" style="height:280px;"></div>
-            <p style="margin-top:0.5rem;">数据来源：深圳新闻网、央广网</p>
+    <!-- 图表1 & 图表9 -->
+    <div class="grid-2 reveal">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">一、2026年前两月双向客流对比</div>
+          <div class="chart-source">数据来源：深圳铁路/深圳新闻网/央广网/人民网</div>
         </div>
-
-        <!-- 第一章：每天8.5万人 -->
-        <div class="chapter">
-            <div class="chapter-header"><span class="chapter-number">一</span><span class="chapter-title">每天8.5万人：刚需撑起的底色</span></div>
-            <div class="news-text">
-                <p>对比1月数据会发现一个关键事实：春运前（1月1日-12日）日均客流为8.48万人次，而整个1月日均客流为8.51万人次，两者几乎持平。春运期间客流虽小幅攀升，但并未脱离日常基数。</p>
-                <p>这意味着：每天都有超过8万人必须跨境——为了工作、为了上学。换句话说，不是春运制造了跨境需求，而是日常刚需本来就足够大。</p>
-            </div>
-            <!-- 图表三：分周柱状图 -->
-            <div class="card">
-                <div class="card-title">📈 三、日常刚需底色：1月客流平稳性</div>
-                <div id="chart3" class="chart-container" style="height:280px;"></div>
-                <p>1月1–12日总客流101.71万，日均8.48万；1月全月总客流263.8万，日均8.51万。</p>
-            </div>
+        <div class="chart-wrapper"><canvas id="chart1"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">年度跨境客流量演变 (2023-2026)</div>
+          <div class="chart-source">2026年仅含1-2月数据</div>
         </div>
-
-        <!-- 第二章：30万双城通勤族 -->
-        <div class="chapter">
-            <div class="chapter-header"><span class="chapter-number">二</span><span class="chapter-title">30万双城通勤族：工作驱动融合</span></div>
-            <div class="news-text">
-                <p>在总客流中，深圳往返香港方向占比高达63%。按此比例推算，每天跨境人群中约有5.4万人次属于深港短途高频流动。</p>
-                <p>福田站内的“港商服务站”提供了最直接的证据：2024年启动以来，该站已接待超过1.4万个香港企业或创业者，提供注册、银行、税务等5600余次服务。“我每天都在深圳和香港之间通勤，高铁不仅速度快，而且特别方便，真正实现了‘一小时生活圈’。”在香港工作、在深圳居住的顾先生笑着说。跨境学童亦是这一群体的缩影——约2.7万名学童每日往返深港上学。跨境学童孙华泽从深圳福田坐高铁到香港西九龙，约14分钟，加上“一地两检”快速通关，全程约30分钟到校。</p>
-            </div>
-            <!-- 图表四：深港主导饼图 + 流向图 -->
-            <div class="card">
-                <div class="card-title">🧭 四、深港占63%：双城通勤核心动脉</div>
-                <div id="chart4" class="chart-container" style="height:300px;"></div>
-                <div class="flow-wrapper">
-                    <div class="flow-card">
-                        <div class="flow-city">深圳福田</div>
-                        <div class="flow-arrow">⬇️</div>
-                        <div class="flow-city">香港西九龙</div>
-                        <div class="flow-time">14<span class="flow-unit">分钟</span></div>
-                    </div>
-                    <div class="flow-card">
-                        <div class="flow-city">广州南</div>
-                        <div class="flow-arrow">⬇️</div>
-                        <div class="flow-city">香港西九龙</div>
-                        <div class="flow-time">47<span class="flow-unit">分钟</span></div>
-                    </div>
-                </div>
-                <p style="text-align:center;">数据来源：广东省人民政府</p>
-            </div>
-        </div>
-
-        <!-- 第三章：周末跨城消费 -->
-        <div class="chapter">
-            <div class="chapter-header"><span class="chapter-number">三</span><span class="chapter-title">周末跨城消费：生活方式在融合</span></div>
-            <div class="news-text">
-                <p>工作之外，休闲消费正成为第二驱动。数据显示，2025年暑运期间，广深港高铁客流持续攀升，累计运送旅客503.9万人次，同比增长15.9%，日均达9.7万人次。</p>
-                <p>西九龙站的商业升级印证了这股消费力：通车以来，站内港式特色餐饮及零售店铺面积增加逾20%。而“高铁+演唱会”模式正在年轻人中流行——内地粉丝周五下班赴港观演，当晚即可返回广州。爱追演唱会的郭伟健清晰地感受到了这一新趋势。出了西九龙站转乘地铁，两站便能到红磡体育馆。“去年坐高铁去香港看了不少明星的演唱会。香港票价更低，看完当晚就能回广州。”郭伟健观察发现，不管在香港还是在澳门，像他一样“跨城观演”的内地粉丝还有很多。2025年，港铁公司与旅游业界合作开行旅游专列超60班，覆盖张家界、潮汕等热门目的地。从西九龙北上的，还有许多从容的“银发背包族”。“趁春节没到，错峰去重庆看洪崖洞。”香港阿叔简福驹说，高铁越来越快、通达站点越来越多，享受“一个人的旅行”成了他每年一两次的“保留节目”。</p>
-            </div>
-            <!-- 图表五：周末消费驱动柱状图 + 图表八词云 -->
-            <div class="card">
-                <div class="card-title">🍹 五、周末消费驱动：2025暑运周末高峰</div>
-                <div id="chart5" class="chart-container" style="height:280px;"></div>
-                <p>单日超10万高峰日59天，全部集中在周末/节假日。</p>
-            </div>
-            <div class="card">
-                <div class="card-title">🎤 八、消费场景多元化</div>
-                <div class="word-cloud">
-                    <span class="cloud-item large">演唱会</span>
-                    <span class="cloud-item medium">银发游</span>
-                    <span class="cloud-item">研学团</span>
-                    <span class="cloud-item medium">亲子游</span>
-                    <span class="cloud-item large">高铁旅游专列</span>
-                    <span class="cloud-item">美食打卡</span>
-                </div>
-                <p style="text-align:center;">案例：郭伟健、简福驹</p>
-            </div>
-        </div>
-
-        <!-- 第四章：正在消融的边界 -->
-        <div class="chapter">
-            <div class="chapter-header"><span class="chapter-number">四</span><span class="chapter-title">正在消融的边界</span></div>
-            <div class="news-text">
-                <p>地理边界正在消融：深圳到香港14分钟，广州到香港47分钟——通勤时间比香港内部跨区更短。</p>
-                <p>身份边界正在消融：30万每天跨境的人群，他们的生活半径早已跨越“两制”，他们是第一批“湾区人”。</p>
-                <p>制度边界正在消融：从2018年的“一地两检”，到2024年的“灵活行”（允许一日内三次改签），再到今年港区政协委员提出的“月票套餐”“自由席”提案——高频流动正在倒逼规则创新。</p>
-                <p>广深港高铁用每天382列、高峰2分钟一班的密度，把三座城市织成一张网。每天8.5万人用高铁投票，把“两制”之下的两个城市，投成一座正在融合的超级都市。</p>
-            </div>
-            <!-- 图表六：时空压缩横向条形 -->
-            <div class="card">
-                <div class="card-title">⏱️ 六、时空压缩：广深港通行时间对比</div>
-                <div id="chart6" class="chart-container" style="height:300px;"></div>
-            </div>
-            <!-- 图表七：高峰日开行列数折线图 + 火车头动画 -->
-            <div class="card">
-                <div class="card-title">🚄 七、2023-2026年高峰日开行列数</div>
-                <div id="chart7" class="chart-container" style="height:300px;"></div>
-            </div>
-            <!-- 图表九：年度客流柱状图 -->
-            <div class="card">
-                <div class="card-title">📊 九、年度跨境客流量</div>
-                <div id="chart9" class="chart-container" style="height:300px;"></div>
-                <div style="display:flex; justify-content:space-around; margin-top:0.5rem;">
-                    <span>2023: 2126.9万</span><span>2024: 3038.5万</span><span>2025: 3579.4万</span><span>2026(1-2): 558.06万</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 数据来源汇总 -->
-        <div class="footer">
-            <div><strong>数据来源</strong><br>深圳铁路/深圳新闻网 · 央广网 · 人民网 · 广东省人民政府 · 港铁公司</div>
-            <div><strong>数据新闻 · 2026</strong></div>
-        </div>
+        <div class="chart-wrapper"><canvas id="chart9"></canvas></div>
+      </div>
     </div>
 
-    <script>
-        (function() {
-            // 初始化所有echarts图表，并添加tooltip实现点击显示数据
-            // 深蓝背景 + 金色主题
-            const chartTheme = {
-                backgroundColor: 'transparent',
-                textStyle: { color: '#e8eef5' },
-                title: { textStyle: { color: '#d4af37' } },
-                tooltip: { trigger: 'item', axisPointer: { type: 'shadow' } },
-                grid: { left: '10%', right: '8%', top: '15%', bottom: '10%', containLabel: true },
-                xAxis: { axisLabel: { color: '#b0c4de' }, axisLine: { lineStyle: { color: '#d4af37' } } },
-                yAxis: { axisLabel: { color: '#b0c4de' }, splitLine: { lineStyle: { color: '#2a4055' } } },
-                legend: { textStyle: { color: '#d4af37' } }
-            };
+    <!-- 章节一 -->
+    <h2 class="section-title reveal"><span>一</span> 每天8.5万人：刚需撑起的底色</h2>
+    <p class="article-text reveal">对比1月数据会发现一个关键事实：春运前（1月1日-12日）日均客流为8.48万人次，而整个1月日均客流为8.51万人次，两者几乎持平。春运期间客流虽小幅攀升，但并未脱离日常基数。</p>
+    <p class="article-text reveal">这意味着：每天都有超过8万人必须跨境——为了工作、为了上学。换句话说，不是春运制造了跨境需求，而是日常刚需本来就足够大。</p>
 
-            // 图表1: 饼图 双向客流
-            const chart1 = echarts.init(document.getElementById('chart1'));
-            chart1.setOption({
-                ...chartTheme,
-                tooltip: { trigger: 'item', formatter: '{b}: {c}万人次 ({d}%)' },
-                series: [{
-                    type: 'pie',
-                    radius: ['45%', '70%'],
-                    center: ['50%', '50%'],
-                    data: [
-                        { name: '内地→香港', value: 288.82 },
-                        { name: '香港→内地', value: 269.24 }
-                    ],
-                    label: { color: '#fff', formatter: '{b}: {c}万' },
-                    itemStyle: { borderRadius: 10, borderColor: '#0a1428', borderWidth: 2 },
-                    color: ['#d4af37', '#5a7d9c']
-                }]
-            });
+    <div class="chart-card reveal">
+      <div class="chart-header">
+        <div class="chart-title">日均8.5万：刚需撑起的稳定底色</div>
+        <div class="chart-source">数据来源：广东省人民政府 / 深圳铁路 / 人民网</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="chart3"></canvas></div>
+    </div>
 
-            // 图表2: 条形图 公交化 (仅显示382列)
-            const chart2 = echarts.init(document.getElementById('chart2'));
-            chart2.setOption({
-                ...chartTheme,
-                tooltip: { trigger: 'axis', formatter: '日均开行列数: {c}列' },
-                xAxis: { type: 'category', data: ['春运日均'] },
-                yAxis: { type: 'value', name: '列数' },
-                series: [{
-                    type: 'bar',
-                    data: [382],
-                    itemStyle: { color: '#d4af37', borderRadius: [8,8,0,0] },
-                    label: { show: true, position: 'top', color: '#d4af37', fontSize: 16, formatter: '382列' }
-                }]
-            });
+    <!-- 章节二 -->
+    <h2 class="section-title reveal"><span>二</span> 30万双城通勤族：工作驱动融合</h2>
+    <p class="article-text reveal">在总客流中，深圳往返香港方向占比高达63%。按此比例推算，每天跨境人群中约有5.4万人次属于深港短途高频流动。</p>
+    <p class="article-text reveal">福田站内的“港商服务站”提供了最直接的证据：2024年启动以来，该站已接待超过1.4万个香港企业或创业者，提供注册、银行、税务等5600余次服务。“我每天都在深圳和香港之间通勤，高铁不仅速度快，而且特别方便，真正实现了‘一小时生活圈’。”在香港工作、在深圳居住的顾先生笑着说。跨境学童亦是这一群体的缩影——约2.7万名学童每日往返深港上学。跨境学童孙华泽从深圳福田坐高铁到香港西九龙，约14分钟，加上“一地两检”快速通关，全程约30分钟到校。</p>
 
-            // 图表3: 分周柱状图
-            const chart3 = echarts.init(document.getElementById('chart3'));
-            chart3.setOption({
-                ...chartTheme,
-                tooltip: { trigger: 'axis', formatter: '第{b}周日均: {c}万人次' },
-                xAxis: { type: 'category', data: ['第1周', '第2周', '第3周', '第4周'] },
-                yAxis: { type: 'value', name: '日均客流(万)' },
-                series: [{
-                    type: 'bar',
-                    data: [8.48, 8.50, 8.55, 8.60],
-                    itemStyle: { color: '#d4af37', borderRadius: [8,8,0,0] },
-                    label: { show: true, position: 'top', color: '#d4af37' }
-                }]
-            });
+    <div class="grid-2 reveal">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">深港占63%：双城通勤核心动脉</div>
+          <div class="chart-source">数据来源：广东省人民政府</div>
+        </div>
+        <div class="chart-wrapper"><canvas id="chart4"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">地理边界消融：比市内通勤更快</div>
+          <div class="chart-source">深港与穗港通行时间对比</div>
+        </div>
+        <div class="chart-wrapper"><canvas id="chart6"></canvas></div>
+      </div>
+    </div>
+  </div>
 
-            // 图表4: 深港占比饼图 (63% vs 37%)
-            const chart4 = echarts.init(document.getElementById('chart4'));
-            chart4.setOption({
-                ...chartTheme,
-                tooltip: { trigger: 'item', formatter: '{b}: {d}%' },
-                series: [{
-                    type: 'pie',
-                    radius: ['40%', '65%'],
-                    data: [
-                        { name: '深圳香港往返', value: 63 },
-                        { name: '其他方向', value: 37 }
-                    ],
-                    label: { color: '#fff', formatter: '{b}: {d}%' },
-                    itemStyle: { borderRadius: 8, borderColor: '#0a1428', borderWidth: 2 },
-                    color: ['#d4af37', '#3a5f7a']
-                }]
-            });
+  <!-- 中段视差：使用您提供的第二张图（已去水印） -->
+  <div class="parallax-section parallax-divider" style="background-image: url('https://v3b.fal.media/files/b/0a91da53/fpTq50ci9YIJJtHcPiu-p_9b7ea56dac0c46c6a3d1427bf82254c3.png');">
+    <div class="parallax-overlay" style="background: linear-gradient(to bottom, var(--bg-main) 0%, rgba(4,13,26,0.2) 50%, var(--bg-main) 100%);"></div>
+  </div>
 
-            // 图表5: 周末消费柱状图 (暑运日均9.7万)
-            const chart5 = echarts.init(document.getElementById('chart5'));
-            chart5.setOption({
-                ...chartTheme,
-                tooltip: { trigger: 'axis', formatter: '日均客流: {c}万人次' },
-                xAxis: { type: 'category', data: ['暑运日均'] },
-                yAxis: { type: 'value', name: '万人次' },
-                series: [{
-                    type: 'bar',
-                    data: [9.7],
-                    itemStyle: { color: '#d4af37', borderRadius: [8,8,0,0] },
-                    label: { show: true, position: 'top', fontSize: 16, formatter: '9.7万' }
-                }]
-            });
+  <div class="content-container" style="padding-top:0;">
+    <!-- 章节三 -->
+    <h2 class="section-title reveal"><span>三</span> 周末跨城消费：生活方式在融合</h2>
+    <p class="article-text reveal">工作之外，休闲消费正成为第二驱动。数据显示，2025年暑运期间，广深港高铁客流持续攀升，累计运送旅客503.9万人次，同比增长15.9%，日均达9.7万人次。</p>
+    
+    <div class="chart-card reveal">
+      <div class="chart-header">
+        <div class="chart-title">周末客流更高：休闲成第二引擎</div>
+        <div class="chart-source">2025暑运客流对比 (来源：深圳新闻网)</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="chart5"></canvas></div>
+    </div>
 
-            // 图表6: 时空压缩横向条形 (14分钟,47分钟,40分钟)
-            const chart6 = echarts.init(document.getElementById('chart6'));
-            chart6.setOption({
-                ...chartTheme,
-                tooltip: { trigger: 'axis', formatter: '{b}: {c}分钟' },
-                grid: { left: '20%' },
-                xAxis: { type: 'value', name: '分钟' },
-                yAxis: { type: 'category', data: ['元朗→中环', '深圳福田→西九龙', '广州南→西九龙'], axisLabel: { color: '#fff' } },
-                series: [{
-                    type: 'bar',
-                    data: [40, 14, 47],
-                    itemStyle: { color: '#d4af37', borderRadius: [0,8,8,0] },
-                    label: { show: true, position: 'right', color: '#d4af37', fontWeight: 'bold' }
-                }]
-            });
+    <p class="article-text reveal">西九龙站的商业升级印证了这股消费力：通车以来，站内港式特色餐饮及零售店铺面积增加逾20%。而“高铁+演唱会”模式正在年轻人中流行——内地粉丝周五下班赴港观演，当晚即可返回广州。爱追演唱会的郭伟健清晰地感受到了这一新趋势。出了西九龙站转乘地铁，两站便能到红磡体育馆。“去年坐高铁去香港看了不少明星的演唱会。香港票价更低，看完当晚就能回广州。”郭伟健观察发现，不管在香港还是在澳门，像他一样“跨城观演”的内地粉丝还有很多。</p>
+    <p class="article-text reveal">2025年，港铁公司与旅游业界合作开行旅游专列超60班，覆盖张家界、潮汕等热门目的地。从西九龙北上的，还有许多从容的“银发背包族”。“趁春节没到，错峰去重庆看洪崖洞。”香港阿叔简福驹说，高铁越来越快、通达站点越来越多，享受“一个人的旅行”成了他每年一两次的“保留节目”。</p>
 
-            // 图表7: 高峰日折线图 + 火车头动画
-            const chart7 = echarts.init(document.getElementById('chart7'));
-            const years = ['2023', '2024', '2025', '2026'];
-            const values = [184, 254, 197, 415];
-            chart7.setOption({
-                ...chartTheme,
-                tooltip: { trigger: 'axis', formatter: '{b}年: {c}列' },
-                xAxis: { type: 'category', data: years },
-                yAxis: { type: 'value', name: '列数' },
-                series: [{
-                    type: 'line',
-                    data: values,
-                    smooth: true,
-                    symbol: 'circle',
-                    symbolSize: 10,
-                    lineStyle: { color: '#d4af37', width: 4 },
-                    areaStyle: { color: 'rgba(212,175,55,0.2)' },
-                    markPoint: { data: [{ type: 'max', name: '峰值' }] }
-                }]
-            });
-            // 火车头动画: 使用graphic绘制移动的火车
-            let phase = 0;
-            const train = setInterval(() => {
-                // 获取当前折线的像素坐标，简单实现：根据时间移动
-                const points = chart7.getModel().getSeries()[0].getData().getLayout('points') || [];
-                if (points.length >= 4) {
-                    const index = Math.floor(phase) % 3; // 线段索引 0-2
-                    const t = phase - Math.floor(phase);
-                    if (index < 3) {
-                        const p1 = points[index];
-                        const p2 = points[index+1];
-                        if (p1 && p2) {
-                            const x = p1[0] + (p2[0]-p1[0]) * t;
-                            const y = p1[1] + (p2[1]-p1[1]) * t;
-                            chart7.setOption({
-                                graphic: [{
-                                    type: 'text',
-                                    left: x - 15,
-                                    top: y - 25,
-                                    style: { text: '🚄', fill: '#d4af37', fontSize: 24 },
-                                    z: 100
-                                }]
-                            });
-                        }
-                    }
-                    phase = (phase + 0.008) % 3;
-                }
-            }, 30);
+    <!-- 图表8 气泡图 -->
+    <div class="chart-card reveal">
+      <div class="chart-header">
+        <div class="chart-title">消费场景分布：多元跨城生活方式</div>
+        <div class="chart-source">悬停气泡查看详细场景互动</div>
+      </div>
+      <div class="bubble-container" id="bubbleChart">
+        <!-- JS将动态生成气泡 -->
+      </div>
+    </div>
 
-            // 图表9: 年度客流柱状图
-            const chart9 = echarts.init(document.getElementById('chart9'));
-            chart9.setOption({
-                ...chartTheme,
-                tooltip: { trigger: 'axis', formatter: '{b}: {c}万人次' },
-                xAxis: { type: 'category', data: ['2023', '2024', '2025', '2026(1-2)'] },
-                yAxis: { type: 'value', name: '万人次' },
-                series: [{
-                    type: 'bar',
-                    data: [2126.9, 3038.5, 3579.4, 558.06],
-                    itemStyle: { color: '#d4af37', borderRadius: [8,8,0,0] },
-                    label: { show: true, position: 'top', color: '#d4af37', formatter: '{c}万' }
-                }]
-            });
+    <!-- 补充图表：公交化运营与火车动画 -->
+    <div class="grid-2 reveal">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">公交化运营：2分钟一班，随到随走</div>
+          <div class="chart-source">春运期间班次密度对比</div>
+        </div>
+        <div class="chart-wrapper"><canvas id="chart2"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">高峰日开行列数增长 (2023-2026)</div>
+          <div class="chart-source">动态火车运行轨迹</div>
+        </div>
+        <div class="chart-wrapper"><canvas id="chart7Canvas"></canvas></div>
+      </div>
+    </div>
 
-            // 窗口resize处理
-            window.addEventListener('resize', () => {
-                chart1.resize(); chart2.resize(); chart3.resize(); chart4.resize();
-                chart5.resize(); chart6.resize(); chart7.resize(); chart9.resize();
-            });
-        })();
-    </script>
+    <!-- 章节四 -->
+    <h2 class="section-title reveal"><span>四</span> 正在消融的边界</h2>
+    <div style="background:var(--bg-card); padding:30px; border-left:4px solid var(--gold-main); border-radius:4px; margin-bottom: 30px;" class="reveal">
+      <p class="article-text" style="color:var(--text-title); margin-top:0;"><strong>地理边界正在消融：</strong>深圳到香港14分钟，广州到香港47分钟——通勤时间比香港内部跨区更短。</p>
+      <p class="article-text" style="color:var(--text-title);"><strong>身份边界正在消融：</strong>30万每天跨境的人群，他们的生活半径早已跨越“两制”，他们是第一批“湾区人”。</p>
+      <p class="article-text" style="color:var(--text-title); margin-bottom:0;"><strong>制度边界正在消融：</strong>从2018年的“一地两检”，到2024年的“灵活行”（允许一日内三次改签），再到今年港区政协委员提出的“月票套餐”“自由席”提案——高频流动正在倒逼规则创新。</p>
+    </div>
+    
+    <p class="article-text reveal" style="font-size: 1.3rem; color: var(--gold-light); text-align: center; margin-top: 50px; line-height: 2;">
+      广深港高铁用每天382列、高峰2分钟一班的密度，把三座城市织成一张网。<br>每天8.5万人用高铁投票，把“两制”之下的两个城市，投成一座正在融合的超级都市。
+    </p>
+
+  </div>
+
+  <div class="footer">
+    <p>数据全部源自官方真实公开报道（深圳铁路 / 广东省人民政府 / 人民网 / 央广网 等）</p>
+    <p style="color:var(--gold-dark); font-size: 0.9rem;">2026年3月 · 深度数据可视化报道</p>
+  </div>
+
+  <script>
+    // 滚动浮现效果
+    function reveal() {
+      var reveals = document.querySelectorAll(".reveal");
+      for (var i = 0; i < reveals.length; i++) {
+        var windowHeight = window.innerHeight;
+        var elementTop = reveals[i].getBoundingClientRect().top;
+        var elementVisible = 100;
+        if (elementTop < windowHeight - elementVisible) {
+          reveals[i].classList.add("active");
+        }
+      }
+    }
+    window.addEventListener("scroll", reveal);
+    reveal();
+
+    // Chart.js 全局配置 (深色/金色主题)
+    Chart.defaults.color = '#b0b8c4';
+    Chart.defaults.font.family = "'PingFang SC', sans-serif";
+    const gridColor = 'rgba(212, 175, 55, 0.1)';
+    const tooltipConfig = {
+      backgroundColor: 'rgba(10, 24, 43, 0.95)',
+      titleColor: '#d4af37',
+      bodyColor: '#fff',
+      borderColor: '#d4af37',
+      borderWidth: 1,
+      padding: 12,
+      boxPadding: 6
+    };
+
+    // 1. 双向客流对比 (饼图)
+    new Chart(document.getElementById('chart1').getContext('2d'), {
+      type: 'pie',
+      data: {
+        labels: ['内地 → 香港 (288.82万)', '香港 → 内地 (269.24万)'],
+        datasets: [{
+          data: [51.8, 48.2],
+          backgroundColor: ['#d4af37', '#1a4e8a'],
+          borderWidth: 0,
+          hoverOffset: 10
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { padding: 20 } },
+          tooltip: tooltipConfig,
+          title: { display: true, text: '双向高度均衡 (占比%)', color: '#f3e5ab' }
+        }
+      }
+    });
+
+    // 9. 年度跨境客流 (柱状图)
+    new Chart(document.getElementById('chart9').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['2023年', '2024年(推算)', '2025年', '2026(1-2月)'],
+        datasets: [{
+          label: '年度客流量 (万人次)',
+          data: [2126.9, 3038.5, 3579.4, 558.06],
+          backgroundColor: 'rgba(212, 175, 55, 0.7)',
+          borderColor: '#d4af37',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          y: { grid: { color: gridColor } },
+          x: { grid: { display: false } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...tooltipConfig,
+            callbacks: {
+              afterBody: function(ctx) {
+                const notes = [
+                  "恢复运营全年",
+                  "基于2025同比+17.8%反推",
+                  "创历史新高同比增17.8%",
+                  "仅前两月数据"
+                ];
+                return '\n备注: ' + notes[ctx[0].dataIndex];
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // 3. 1月客流平稳性 (双轴柱状图)
+    new Chart(document.getElementById('chart3').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['1.1-1.12(春运前)', '1月全月(含春运)'],
+        datasets: [
+          {
+            label: '总客流 (万人次) - 右轴',
+            data: [101.71, 263.8],
+            backgroundColor: 'rgba(26, 78, 138, 0.6)',
+            yAxisID: 'y1',
+            borderRadius: 4
+          },
+          {
+            label: '日均客流 (万人次) - 左轴',
+            data: [8.48, 8.51],
+            backgroundColor: '#d4af37',
+            yAxisID: 'y',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          y: { type: 'linear', position: 'left', grid: { color: gridColor }, min: 8.0, title: {display: true, text: '日均 (万)'} },
+          y1: { type: 'linear', position: 'right', grid: { display: false }, title: {display: true, text: '总数 (万)'} },
+          x: { grid: { display: false } }
+        },
+        plugins: { tooltip: tooltipConfig }
+      }
+    });
+
+    // 4. 深港占比 (环形图)
+    new Chart(document.getElementById('chart4').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['深圳往返香港 (63%)', '广州及其他区域 (37%)'],
+        datasets: [{
+          data: [63, 37],
+          backgroundColor: ['#d4af37', '#0f233d'],
+          borderColor: '#0a182b',
+          borderWidth: 2,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '65%',
+        plugins: { legend: { position: 'bottom' }, tooltip: tooltipConfig }
+      }
+    });
+
+    // 6. 时空压缩 (条形图)
+    new Chart(document.getElementById('chart6').getContext('2d'), {
+      type: 'bar',
+      indexAxis: 'y',
+      data: {
+        labels: ['深港 (福田-西九龙)', '香港内部跨区 (通常)', '穗港 (广州南-西九龙)'],
+        datasets: [{
+          label: '通行时间 (分钟)',
+          data: [14, 30, 47],
+          backgroundColor: ['#d4af37', '#6b7a90', '#1a4e8a'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { x: { grid: { color: gridColor } }, y: { grid: { display: false } } },
+        plugins: { legend: { display: false }, tooltip: tooltipConfig }
+      }
+    });
+
+    // 5. 周末消费驱动 (柱状图)
+    new Chart(document.getElementById('chart5').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['工作日(参考)', '暑运日均', '单日高峰(周末节假日)'],
+        datasets: [{
+          label: '客流 (万人次)',
+          data: [8.5, 9.7, 10.5],
+          backgroundColor: ['#1a4e8a', 'rgba(212, 175, 55, 0.6)', '#d4af37'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { y: { grid: { color: gridColor }, min: 6 } },
+        plugins: {
+          legend: { display: false }, tooltip: tooltipConfig,
+          title: { display: true, text: '59天超10万高峰日全部集中在周末/节假日', color: '#f3e5ab' }
+        }
+      }
+    });
+
+    // 2. 公交化班次 (柱状图)
+    new Chart(document.getElementById('chart2').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['春运日均开行', '平日对比(模拟)', '高峰期每小时'],
+        datasets: [{
+          label: '列车数量',
+          data: [382, 300, 30],
+          backgroundColor: ['#d4af37', '#1a4e8a', '#f3e5ab'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { y: { grid: { color: gridColor } } },
+        plugins: {
+          legend: { display: false }, tooltip: tooltipConfig,
+          title: { display: true, text: '高峰每小时30列 = 平均2分钟一班', color: '#f3e5ab' }
+        }
+      }
+    });
+
+    // 8. 气泡图 (纯 HTML/JS/CSS 实现互动)
+    const bubbleData = [
+      { name: "演唱会跨城", size: 140, color: "#d4af37", x: 50, y: 45, tip: "最大热点：周末下班赴港观演，当晚返回" },
+      { name: "银发错峰游", size: 110, color: "#1a4e8a", x: 25, y: 30, tip: "香港阿伯的保留节目，错峰去张家界/重庆" },
+      { name: "周末研学团", size: 85, color: "#8a7322", x: 75, y: 65, tip: "两地学校交流与青少年研学互动" },
+      { name: "家庭亲子游", size: 95, color: "#6b7a90", x: 20, y: 70, tip: "短途周末放松，带动西九龙客流" },
+      { name: "美食打卡", size: 70, color: "#f3e5ab", fontColor: "#000", x: 80, y: 25, tip: "西九龙站内港式餐饮零售面积增加超20%" }
+    ];
+    const bubbleContainer = document.getElementById('bubbleChart');
+    bubbleData.forEach(b => {
+      let div = document.createElement('div');
+      div.className = 'bubble';
+      div.style.width = b.size + 'px';
+      div.style.height = b.size + 'px';
+      div.style.backgroundColor = b.color;
+      div.style.left = `calc(${b.x}% - ${b.size/2}px)`;
+      div.style.top = `calc(${b.y}% - ${b.size/2}px)`;
+      div.style.color = b.fontColor || '#fff';
+      
+      div.innerHTML = `
+        <span class="b-title" style="font-size: ${b.size*0.18}px">${b.name}</span>
+        <div class="tooltip">${b.tip}</div>
+      `;
+      bubbleContainer.appendChild(div);
+    });
+
+    // 7. 高峰日开行列数 - 动态火车折线图 (Canvas)
+    const canvas = document.getElementById('chart7Canvas');
+    const ctx = canvas.getContext('2d');
+    const years = ['2023年', '2024年', '2025年', '2026年'];
+    const vals = [184, 254, 197, 415];
+    
+    let progress = 0; // 火车运行进度
+    
+    function drawTrainCurve() {
+      // 适配响应式大小
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+      const w = canvas.width, h = canvas.height;
+      const pad = { t: 40, b: 40, l: 40, r: 40 };
+      const maxVal = 450;
+      
+      ctx.clearRect(0,0,w,h);
+      
+      // 绘制坐标系及背景线
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      for(let i=0; i<=5; i++) {
+        let y = pad.t + (h - pad.t - pad.b) * (1 - i/5);
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+        ctx.fillStyle = '#6b7a90'; ctx.font = '12px sans-serif'; ctx.textAlign = 'right';
+        ctx.fillText((maxVal/5)*i, pad.l - 10, y + 4);
+      }
+
+      // 获取各点坐标
+      const pts = vals.map((v, i) => {
+        return {
+          x: pad.l + (w - pad.l - pad.r) * (i / (vals.length - 1)),
+          y: pad.t + (h - pad.t - pad.b) * (1 - v / maxVal)
+        };
+      });
+
+      // 绘制底部平滑折线 (使用贝塞尔曲线连接)
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for(let i=0; i<pts.length-1; i++) {
+        let p1 = pts[i], p2 = pts[i+1];
+        let midX = (p1.x + p2.x) / 2;
+        ctx.bezierCurveTo(midX, p1.y, midX, p2.y, p2.x, p2.y);
+      }
+      ctx.strokeStyle = '#1a4e8a';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      // 绘制X轴文字和数据点
+      pts.forEach((p, i) => {
+        ctx.fillStyle = '#b0b8c4'; ctx.textAlign = 'center';
+        ctx.fillText(years[i], p.x, h - 15);
+        
+        ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, Math.PI*2);
+        ctx.fillStyle = '#0a182b'; ctx.fill();
+        ctx.strokeStyle = '#d4af37'; ctx.lineWidth = 2; ctx.stroke();
+        
+        ctx.fillStyle = '#f3e5ab'; ctx.font = 'bold 14px sans-serif';
+        ctx.fillText(vals[i] + '列', p.x, p.y - 15);
+      });
+
+      // 计算火车当前位置与角度
+      // 简单的分段插值计算进度
+      let totalSegments = pts.length - 1;
+      let currSeg = Math.floor(progress * totalSegments);
+      if(currSeg >= totalSegments) currSeg = totalSegments - 1;
+      
+      let t = (progress * totalSegments) - currSeg; 
+      let p1 = pts[currSeg], p2 = pts[currSeg+1];
+      
+      // 贝塞尔曲线上的点公式计算
+      let midX = (p1.x + p2.x) / 2;
+      let bx = Math.pow(1-t, 3)*p1.x + 3*Math.pow(1-t, 2)*t*midX + 3*(1-t)*Math.pow(t, 2)*midX + Math.pow(t, 3)*p2.x;
+      let by = Math.pow(1-t, 3)*p1.y + 3*Math.pow(1-t, 2)*t*p1.y + 3*(1-t)*Math.pow(t, 2)*p2.y + Math.pow(t, 3)*p2.y;
+      
+      // 导数求切线角度
+      let dtx = 3*Math.pow(1-t,2)*(midX-p1.x) + 6*(1-t)*t*(midX-midX) + 3*Math.pow(t,2)*(p2.x-midX);
+      let dty = 3*Math.pow(1-t,2)*(p1.y-p1.y) + 6*(1-t)*t*(p2.y-p1.y) + 3*Math.pow(t,2)*(p2.y-p2.y);
+      let angle = Math.atan2(dty, dtx);
+
+      // 绘制运行高亮轨迹
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for(let step=0; step<=progress*100; step++) {
+        let pT = step/100;
+        let cS = Math.floor(pT * totalSegments);
+        if(cS >= totalSegments) cS = totalSegments-1;
+        let locT = (pT * totalSegments) - cS;
+        let cP1 = pts[cS], cP2 = pts[cS+1];
+        let cMidX = (cP1.x + cP2.x)/2;
+        let cx = Math.pow(1-locT, 3)*cP1.x + 3*Math.pow(1-locT, 2)*locT*cMidX + 3*(1-locT)*Math.pow(locT, 2)*cMidX + Math.pow(locT, 3)*cP2.x;
+        let cy = Math.pow(1-locT, 3)*cP1.y + 3*Math.pow(1-locT, 2)*locT*cP1.y + 3*(1-locT)*Math.pow(locT, 2)*cP2.y + Math.pow(locT, 3)*cP2.y;
+        ctx.lineTo(cx, cy);
+      }
+      ctx.strokeStyle = '#d4af37'; ctx.lineWidth = 4; ctx.stroke();
+
+      // 绘制发光的火车头
+      ctx.save();
+      ctx.translate(bx, by);
+      ctx.rotate(angle);
+      
+      ctx.shadowColor = '#d4af37';
+      ctx.shadowBlur = 10;
+      ctx.fillStyle = '#fff';
+      
+      // 火车车身形状
+      ctx.beginPath();
+      ctx.roundRect(-20, -8, 40, 16, 4);
+      ctx.fill();
+      
+      // 车窗
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#0a182b';
+      ctx.fillRect(-10, -5, 8, 10);
+      ctx.fillRect(5, -5, 8, 10);
+      
+      // 车头灯光指示
+      ctx.fillStyle = '#d4af37';
+      ctx.beginPath();
+      ctx.moveTo(20, -8);
+      ctx.lineTo(28, 0);
+      ctx.lineTo(20, 8);
+      ctx.fill();
+
+      ctx.restore();
+
+      progress += 0.002;
+      if(progress > 1) progress = 0; // 循环运行
+      
+      requestAnimationFrame(drawTrainCurve);
+    }
+    
+    // 监听窗口大小变化避免画布模糊
+    window.addEventListener('resize', drawTrainCurve);
+    // 启动火车动画
+    drawTrainCurve();
+
+  </script>
 </body>
 </html>
